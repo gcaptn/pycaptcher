@@ -7,7 +7,7 @@ class UI:
         root = tk.Tk()
         root.title("pycaptcher")
         root.attributes("-topmost", True)
-        root.geometry("600x400")
+        root.geometry("600x360")
         root.wm_attributes("-transparentcolor", root["bg"]) # Transparent background
 
         topbar = tk.Frame(bg="#373e4d", pady=2, padx=2)

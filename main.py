@@ -3,6 +3,8 @@ import screencap
 
 import os
 import re
+import keyboard
+
 
 def clean_path(path):
 	path = path.replace("\\", "/")
@@ -37,27 +39,33 @@ def main():
 		save_dir = interface.get_filesave()
 		find_or_create_dir(save_dir)
 
-		state["current_recording"] = screencap.Recording(save_dir)
+		state["current_recording"] = screencap.Recording(interface, save_dir)
 		recording = state["current_recording"]
 		interface.set_statustext("Recording")
 		interface.set_lock()
-		interface.set_record_callback(stop_recording)
 
 		x, y, width, height = interface.get_bounding_rect()
 		recording.take(x, y, width, height)
 
 	def stop_recording():
 		recording = state["current_recording"]
-		recording.stop()
-		recording.save()
+		recording.stop() # stop writing
+		recording.save() # trash the recording object
 
 		state["current_recording"] = None
 		interface.set_statustext("pycaptcher")
 		interface.set_lock(False)
-		interface.set_record_callback(start_recording)
+
+	def take_recording():
+		if state["current_recording"]:
+			stop_recording()
+		else:
+			start_recording()
 
 	interface.set_capture_callback(take_screenshot)
-	interface.set_record_callback(start_recording)
+	interface.set_record_callback(take_recording)
+	keyboard.add_hotkey("ctrl+f12", take_screenshot)
+	keyboard.add_hotkey("ctrl+f11", take_recording)
 	interface.run()
 
 

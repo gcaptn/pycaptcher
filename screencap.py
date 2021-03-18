@@ -13,6 +13,7 @@ def get_formatted_time():
 	return "{0}{1}{2}_{3}".format(
 		localtime.tm_year, localtime.tm_mon, localtime.tm_mday, floor(time.time()*100))
 
+# Screen recording is inconsistent and buggy.
 
 class Recording:
 	def __init__(self, interface, path = "."):
@@ -32,7 +33,7 @@ class Recording:
 			self.region = (x, y, width, height)
 			self.resolution = (width, height)
 			self.codec = cv2.VideoWriter_fourcc(*"XVID")
-			self.FPS = 30.0
+			self.FPS = 20.0
 			self.writer = cv2.VideoWriter(self.name, self.codec, self.FPS, self.resolution)
 			self.recording = True
 
@@ -43,7 +44,7 @@ class Recording:
 				frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) 
 				self.writer.write(frame)
 
-		threading._start_new_thread(_take_video)
+		threading._start_new_thread(_take_video, ())
 
 	def stop(self):
 		self.writer.release()
